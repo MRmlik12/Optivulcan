@@ -1,7 +1,6 @@
 using System.IO;
 using Optivulcan.Enums;
 using Optivulcan.Pocos;
-using WireMock.Exceptions;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -33,7 +32,7 @@ namespace Optivulcan.Test
         public async void CheckFirstElementFromResponse()
         {
             _server.Given(Request.Create().WithPath("/lista.html"))
-                .RespondWith(Response.Create().WithBody(File.ReadAllText("./html/lista.html")));
+                .RespondWith(Response.Create().WithBody(await File.ReadAllTextAsync("./html/lista.html")));
             
             var result = await Optivulcan.GetBranchListAsync(_server.Urls[0]);
             var expectedItem = new Branch
@@ -43,9 +42,9 @@ namespace Optivulcan.Test
                 Type = BranchType.Class
             };
             
-            Assert.Equal(result[0].Name, expectedItem.Name);
-            Assert.Equal(result[0].Url, expectedItem.Url);
-            Assert.Equal(result[0].Type, expectedItem.Type);
+            Assert.Equal(expectedItem.Name, result[0].Name);
+            Assert.Equal(expectedItem.Url, result[0].Url);
+            Assert.Equal(expectedItem.Type, result[0].Type);
         }
     }
 }
