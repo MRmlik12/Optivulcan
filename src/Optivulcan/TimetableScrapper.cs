@@ -61,7 +61,7 @@ namespace Optivulcan
 
         private static bool IsLessonEmpty(string content)
         {
-            return content == "&nbsp;" || string.IsNullOrEmpty(content);
+            return string.IsNullOrWhiteSpace(content);
         }
 
         private void ScrapTimetable()
@@ -77,18 +77,18 @@ namespace Optivulcan
 
                 foreach (var l in row.GetElementsByClassName("l"))
                 {
-                    if (!IsLessonEmpty(l.TextContent))
+                    if (IsLessonEmpty(l.TextContent))
                     {
-                        var teachers = GetTeachers(l);
-                        var lessons = GetSubjects(l);
-                        var classrooms = GetClassrooms(l);
-
-                        AppendToTimetableList(lessons, dayOfWeek, lessonNumber, DateTime.Parse(hours[0]), DateTime.Parse(hours[1]),
-                            teachers, classrooms);
                         dayOfWeek++;
                         continue;
                     }
+                    
+                    var teachers = GetTeachers(l);
+                    var lessons = GetSubjects(l);
+                    var classrooms = GetClassrooms(l);
 
+                    AppendToTimetableList(lessons, dayOfWeek, lessonNumber, DateTime.Parse(hours[0]), DateTime.Parse(hours[1]),
+                        teachers, classrooms);
                     dayOfWeek++;
                 }
             }
