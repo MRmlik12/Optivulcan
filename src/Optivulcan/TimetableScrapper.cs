@@ -17,9 +17,9 @@ namespace Optivulcan
         private readonly string _url;
         private readonly Timetable _timetable;
         
-        public TimetableScrapper(string branchHref, string url)
+        public TimetableScrapper(string url)
         {
-            _url = url + branchHref;
+            _url = url;
             _timetable = new Timetable();
         }
         

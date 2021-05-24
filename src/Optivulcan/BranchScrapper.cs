@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AngleSharp;
@@ -12,18 +13,20 @@ namespace Optivulcan
     internal class BranchScrapper : IScrapper
     {
         private IDocument _document;
+        private string _url;
         private readonly List<Branch> _branches;
 
-        public BranchScrapper()
+        public BranchScrapper(string url)
         {
             _branches = new List<Branch>();
+            _url = url;
         }
         
-        private async Task Initialize(string url)
+        private async Task Initialize()
         {
             var config = Configuration.Default.WithDefaultLoader();
             var context = BrowsingContext.New(config);
-            _document = await context.OpenAsync($"{url}/lista.html");
+            _document = await context.OpenAsync($"{_url}/lista.html");
         }
 
         private static BranchType GetBranchType(char branch)
@@ -43,20 +46,26 @@ namespace Optivulcan
             _branches.Add(new Branch
             {
                 Name = item.TextContent,
-                Url = url,
+                Url = $"/{url}",
+                FullUrl = $"{_url}/{url}",
                 Type = GetBranchType(url.Split('/')[1].ToCharArray()[0])
             });
         }
 
-        public async Task<List<Branch>> GetBranches(string url)
+        private void ScrapBranch()
         {
-            await Initialize(url);
             var items = _document.QuerySelectorAll<IHtmlAnchorElement>("ul li a");
             foreach (var item in items) 
             { 
                 if (!item.GetAttribute("target").Equals("_blank"))
                     AppendBranchItem(item);
             }
+        }
+
+        public async Task<List<Branch>> GetBranches()
+        {
+            await Initialize();
+            ScrapBranch();
 
             return _branches;
         }

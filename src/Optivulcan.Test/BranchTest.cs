@@ -10,7 +10,7 @@ namespace Optivulcan.Test
 {
     public class BranchTest
     {
-        private WireMockServer _server;
+        private readonly WireMockServer _server;
         private const int Size = 5;
 
         public BranchTest()
@@ -38,12 +38,14 @@ namespace Optivulcan.Test
             var expectedItem = new Branch
             {
                 Name = "6A",
-                Url = "plany/o1.html",
+                Url = "/plany/o1.html",
+                FullUrl = _server.Urls[0] + "plany/o1.html",
                 Type = BranchType.Class
             };
             
             Assert.Equal(expectedItem.Name, result[0].Name);
             Assert.Equal(expectedItem.Url, result[0].Url);
+            Assert.Equal(expectedItem.FullUrl, expectedItem.FullUrl);
             Assert.Equal(expectedItem.Type, result[0].Type);
         }
     }

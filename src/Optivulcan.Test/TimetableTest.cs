@@ -13,7 +13,7 @@ namespace Optivulcan.Test
     public class TimetableTest
     {
         private const int ExpectedListSize = 13;
-        private WireMockServer _server;
+        private readonly WireMockServer _server;
 
         public TimetableTest()
         {
@@ -26,7 +26,7 @@ namespace Optivulcan.Test
             _server.Given(Request.Create().WithPath("/plany/o1.html"))
                 .RespondWith(Response.Create().WithBody(await File.ReadAllTextAsync("./html/plany/o1.html")));
             
-            var result = await Optivulcan.GetTimetableAsync(_server.Urls[0], "/plany/o1.html");
+            var result = await Optivulcan.GetTimetableAsync(_server.Urls[0] + "/plany/o1.html");
             Assert.Equal(ExpectedListSize, result.TimetableItems.Count);
         }
 
@@ -36,7 +36,7 @@ namespace Optivulcan.Test
             _server.Given(Request.Create().WithPath("/plany/o1.html"))
                 .RespondWith(Response.Create().WithBody(await File.ReadAllTextAsync("./html/plany/o1.html")));
             
-            var result = await Optivulcan.GetTimetableAsync(_server.Urls[0], "/plany/o1.html");
+            var result = await Optivulcan.GetTimetableAsync(_server.Urls[0] + "/plany/o1.html");
             var expectedItem = new TimetableItem
             {
                 Subject = new List<string>
