@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Optivulcan.Enums;
 
 namespace Optivulcan.Pocos
 {
     public class TimetableItem
     {
-        public List<string> Lesson { get; set; }
-        public int LessonNumber { get; set; }
-        public DateTime StartAt { get; set; }
-        public DateTime EndAt { get; set; }
-        public List<Teacher> Teacher { get; set; }
-        public List<Classroom> Classroom { get; set; }
+        public List<string> Subject { get; init; }
+        public Week DayOfWeek { get; init; }
+        public int LessonNumber { get; init; }
+        public DateTime StartAt { get; init; }
+        public DateTime EndAt { get; init; }
+        public List<Teacher> Teacher { get; init; }
+        public List<Classroom> Classroom { get; init; }
     }
 }

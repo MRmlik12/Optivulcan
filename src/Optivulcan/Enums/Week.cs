@@ -7,6 +7,6 @@ namespace Optivulcan.Enums
         Wednesday,
         Thursday,
         Friday,
-        Saturday,
+        Saturday
     }
 }
