@@ -16,6 +16,6 @@ jobs:
       - name: Test project
         run: dotnet test src/Optivulcan.Test
       - name: Build Project
-        run: dotnet pack -c Release
+        run: dotnet pack -c Release src/Optivulcan
       - name: Publish to NuGet
         run: dotnet nuget push src/Optivulcan/bin/Release/*.nupkg -k ${{ secrets.NUGET_API_KEY }}
