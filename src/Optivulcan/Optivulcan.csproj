@@ -2,6 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <PackageVersion>0.1.0</PackageVersion>
+    <Title>Optivulcan</Title>
+    <Authors>MRmlik12</Authors>
+    <Description> A simple timetable parser for Optivum UONET+ written in C# </Description>
+    <Copyright>MRmlik12</Copyright>
+    <PackageProjectUrl>https://github.com/MRmlik12/Optivulcan</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/MRmlik12/Optivulcan/blob/main/LICENSE.md</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/MRmlik12/Optivulcan</RepositoryUrl>
+    <PackageTags>Vulcan, School, Timetable, UONET+</PackageTags>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
