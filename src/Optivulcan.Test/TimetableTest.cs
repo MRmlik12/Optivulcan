@@ -60,7 +60,7 @@ namespace Optivulcan.Test
                     new()
                     {
                         ClassroomNumber = "2",
-                        ClassroomHref = "s34.html"
+                        Href = "s34.html"
                     }
                 }
             };
@@ -72,7 +72,7 @@ namespace Optivulcan.Test
             Assert.Equal(expectedItem.Teacher[0].ToString(), result.TimetableItems[1].Teacher[0].ToString());
             Assert.Equal(expectedItem.Teacher[0].Href, result.TimetableItems[1].Teacher[0].Href);
             Assert.Equal(expectedItem.Classroom[0].ToString(), result.TimetableItems[1].Classroom[0].ToString());
-            Assert.Equal(expectedItem.Classroom[0].ClassroomHref, result.TimetableItems[1].Classroom[0].ClassroomHref);
+            Assert.Equal(expectedItem.Classroom[0].Href, result.TimetableItems[1].Classroom[0].Href);
         }
     }
 }
