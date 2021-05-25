@@ -51,7 +51,7 @@ namespace Optivulcan
 
         private static List<Classroom> GetClassrooms(IElement l)
         {
-            return l.GetElementsByClassName("s").Select(classroom => new Classroom {ClassroomNumber = classroom.TextContent, ClassroomHref = classroom.GetAttribute("href")}).ToList();
+            return l.GetElementsByClassName("s").Select(classroom => new Classroom {ClassroomNumber = classroom.TextContent, Href = classroom.GetAttribute("href")}).ToList();
         }
 
         private static List<Teacher> GetTeachers(IElement l)

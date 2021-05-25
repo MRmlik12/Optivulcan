@@ -1,5 +1,7 @@
-name: Test pr
-on: [ pull_request ]
+name: Build & deploy
+on:
+  push:
+    branches: [ main ]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,3 +15,7 @@ jobs:
         run: dotnet restore src
       - name: Test project
         run: dotnet test src/Optivulcan.Test
+      - name: Build Project
+        run: dotnet pack -c Release
+      - name: Publish to NuGet
+        run: dotnet nuget push src/Optivulcan/bin/Release/*.nupkg -k ${{ secrets.NUGET_API_KEY }}
