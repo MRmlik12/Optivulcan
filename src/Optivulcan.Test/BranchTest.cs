@@ -24,7 +24,7 @@ namespace Optivulcan.Test
             _server.Given(Request.Create().WithPath("/lista.html"))
                 .RespondWith(Response.Create().WithBody(File.ReadAllText("./html/lista.html")));
             
-            var result = await Optivulcan.GetBranchListAsync(_server.Urls[0]);
+            var result = await Api.GetBranchListAsync(_server.Urls[0]);
             Assert.Equal(Size, result.Count);
         }
         
@@ -34,7 +34,7 @@ namespace Optivulcan.Test
             _server.Given(Request.Create().WithPath("/lista.html"))
                 .RespondWith(Response.Create().WithBody(await File.ReadAllTextAsync("./html/lista.html")));
             
-            var result = await Optivulcan.GetBranchListAsync(_server.Urls[0]);
+            var result = await Api.GetBranchListAsync(_server.Urls[0]);
             var expectedItem = new Branch
             {
                 Name = "6A",

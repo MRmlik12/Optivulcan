@@ -7,15 +7,15 @@ A simple timetable parser for Optivum UONET+ written in C#
 # Example usage
 
 ```csharp
-var branches = await Optivulcan.GetBranchListAsync("URL_OF_YOUR_SCHOOL_TIMETABLE"); // Get branches
-var timetable = await Optivulcan.GetTimetableAsync(branches[index].FullUrl) // Get timetable
+var branches = await Api.GetBranchListAsync("URL_OF_YOUR_SCHOOL_TIMETABLE"); // Get branches
+var timetable = await .GetTimetableAsync(branches[index].FullUrl) // Get timetable
 ```
 
 # Build from source
 
 ```bash
 $ dotnet restore src
-$ dotnet build src/Optivulcan
+$ dotnet build src
 $ dotnet pack -c Release src/Optivulcan
 ```
 
