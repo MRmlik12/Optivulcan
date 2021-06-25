@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <PackageVersion>0.1.0</PackageVersion>
+    <PackageVersion>0.1.1</PackageVersion>
     <Title>Optivulcan</Title>
     <Authors>MRmlik12</Authors>
     <Description> A simple timetable parser for Optivum UONET+ written in C# </Description>
