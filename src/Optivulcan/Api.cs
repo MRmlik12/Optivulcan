@@ -4,7 +4,7 @@ using Optivulcan.Pocos;
 
 namespace Optivulcan
 {
-    public static class Optivulcan
+    public static class Api
     {
         public static async Task<List<Branch>> GetBranchListAsync(string url)
         {
