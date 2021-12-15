@@ -13,7 +13,7 @@ namespace Optivulcan
 {
     internal class TimetableScrapper : IScrapper
     {
-        private IDocument _document;
+        private IDocument? _document;
         private readonly string _url;
         private readonly Timetable _timetable;
         
@@ -66,6 +66,7 @@ namespace Optivulcan
 
         private void ScrapTimetable()
         {
+            if (_document == null) return;
             var timetable = (IHtmlTableElement)_document.GetElementsByClassName("tabela")[0];
             foreach (var row in timetable.Rows)
             {

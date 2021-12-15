@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AngleSharp;
@@ -12,8 +11,8 @@ namespace Optivulcan
 {
     internal class BranchScrapper : IScrapper
     {
-        private IDocument _document;
-        private string _url;
+        private IDocument? _document;
+        private readonly string _url;
         private readonly List<Branch> _branches;
 
         public BranchScrapper(string url)
@@ -42,23 +41,27 @@ namespace Optivulcan
 
         private void AppendBranchItem(IHtmlAnchorElement item)
         {
-            var url = item.GetAttribute("href");
             _branches.Add(new Branch
             {
                 Name = item.TextContent,
-                Url = $"/{url}",
-                FullUrl = $"{_url}/{url}",
-                Type = GetBranchType(url.Split('/')[1].ToCharArray()[0])
+                Url = item.PathName,
+                FullUrl = $"{item.Href}/{item.PathName}",
+                Type = GetBranchType(item.PathName.Split('/')[2].ToCharArray()[0])
             });
         }
 
         private void ScrapBranch()
         {
-            var items = _document.QuerySelectorAll<IHtmlAnchorElement>("ul li a");
-            foreach (var item in items) 
-            { 
-                if (!item.GetAttribute("target").Equals("_blank"))
-                    AppendBranchItem(item);
+            var items = _document?.QuerySelectorAll<IHtmlAnchorElement>("ul li a");
+            if (items == null) return;
+            
+            foreach (var item in items)
+            {
+                var target = item.Target;
+                
+                if (target!.Equals("_blank")) continue;
+                
+                AppendBranchItem(item);
             }
         }
 
