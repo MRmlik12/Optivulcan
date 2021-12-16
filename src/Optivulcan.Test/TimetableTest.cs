@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Optivulcan.Test;
 
-public class TimetableTest
+public class TimetableTest : IDisposable
 {
     private const int ExpectedListSize = 13;
     private readonly WireMockServer _server;
@@ -26,7 +26,7 @@ public class TimetableTest
         _server.Given(Request.Create().WithPath("/plany/o1.html"))
             .RespondWith(Response.Create().WithBody(await File.ReadAllTextAsync("./html/plany/o1.html")));
 
-        var result = await Api.GetTimetableAsync(_server.Urls[0] + "/plany/o1.html");
+        var result = await OptivulcanApi.GetTimetableAsync(_server.Urls[0] + "/plany/o1.html");
         Assert.Equal(ExpectedListSize, result.TimetableItems.Count);
     }
 
@@ -36,7 +36,7 @@ public class TimetableTest
         _server.Given(Request.Create().WithPath("/plany/o1.html"))
             .RespondWith(Response.Create().WithBody(await File.ReadAllTextAsync("./html/plany/o1.html")));
 
-        var result = await Api.GetTimetableAsync(_server.Urls[0] + "/plany/o1.html");
+        var result = await OptivulcanApi.GetTimetableAsync(_server.Urls[0] + "/plany/o1.html");
         var expectedItem = new TimetableItem
         {
             Subject = new List<string>
@@ -69,9 +69,12 @@ public class TimetableTest
         Assert.Equal(expectedItem.DayOfWeek, result.TimetableItems[1].DayOfWeek);
         Assert.Equal(expectedItem.StartAt, result.TimetableItems[1].StartAt);
         Assert.Equal(expectedItem.EndAt, result.TimetableItems[1].EndAt);
-        Assert.Equal(expectedItem.Teacher[0].ToString(), result.TimetableItems[1].Teacher[0].ToString());
-        Assert.Equal(expectedItem.Teacher[0].Href, result.TimetableItems[1].Teacher[0].Href);
-        Assert.Equal(expectedItem.Classroom[0].ToString(), result.TimetableItems[1].Classroom[0].ToString());
-        Assert.Equal(expectedItem.Classroom[0].Href, result.TimetableItems[1].Classroom[0].Href);
+        Assert.Equal(expectedItem.Teacher[0].ToString(), result.TimetableItems[1].Teacher?[0].ToString());
+        Assert.Equal(expectedItem.Teacher[0].Href, result.TimetableItems[1].Teacher?[0].Href);
+        Assert.Equal(expectedItem.Classroom[0].ToString(), result.TimetableItems[1].Classroom?[0].ToString());
+        Assert.Equal(expectedItem.Classroom[0].Href, result.TimetableItems[1].Classroom?[0].Href);
     }
+
+    public void Dispose()
+        => _server?.Dispose();
 }

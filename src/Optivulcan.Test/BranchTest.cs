@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Optivulcan.Enums;
 using Optivulcan.Pocos;
@@ -8,7 +9,7 @@ using Xunit;
 
 namespace Optivulcan.Test;
 
-public class BranchTest
+public class BranchTest : IDisposable
 {
     private const int Size = 5;
     private readonly WireMockServer _server;
@@ -24,7 +25,7 @@ public class BranchTest
         _server.Given(Request.Create().WithPath("/lista.html"))
             .RespondWith(Response.Create().WithBody(File.ReadAllText("./html/lista.html")));
 
-        var result = await Api.GetBranchListAsync(_server.Urls[0]);
+        var result = await OptivulcanApi.GetBranchListAsync(_server.Urls[0]);
         Assert.Equal(Size, result.Count);
     }
 
@@ -34,12 +35,12 @@ public class BranchTest
         _server.Given(Request.Create().WithPath("/lista.html"))
             .RespondWith(Response.Create().WithBody(await File.ReadAllTextAsync("./html/lista.html")));
 
-        var result = await Api.GetBranchListAsync(_server.Urls[0]);
+        var result = await OptivulcanApi.GetBranchListAsync(_server.Urls[0]);
         var expectedItem = new Branch
         {
             Name = "6A",
             Url = "/plany/o1.html",
-            FullUrl = _server.Urls[0] + "plany/o1.html",
+            FullUrl = $"{_server.Urls[0]}plany/o1.html",
             Type = BranchType.Class
         };
 
@@ -48,4 +49,8 @@ public class BranchTest
         Assert.Equal(expectedItem.FullUrl, expectedItem.FullUrl);
         Assert.Equal(expectedItem.Type, result[0].Type);
     }
+
+    public void Dispose()
+        => _server?.Dispose();
+
 }

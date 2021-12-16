@@ -2,41 +2,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
-using Optivulcan.Configurations;
 using Optivulcan.Enums;
-using Optivulcan.Interfaces;
 using Optivulcan.Pocos;
 
-namespace Optivulcan;
+namespace Optivulcan.Scrapper;
 
-internal class TimetableScrapper : IScrapper
+internal class TimetableScrapper : BaseScrapper
 {
-    private readonly Timetable _timetable;
-    private readonly string _url;
-    private IDocument? _document;
-    private readonly string? _userAgent;
+    private readonly Timetable _timetable = new();
 
-    public TimetableScrapper(string url, string? userAgent)
+    public TimetableScrapper(string url, string? userAgent) : base(url, userAgent)
     {
-        _url = url;
-        _userAgent = userAgent;
-        _timetable = new Timetable();
-    }
-
-    private async Task Initialize(string address)
-    {
-        var context = BrowsingContext.New(AngleSharpConfiguration.GetAngleSharpDefaultConfiguration(_userAgent));
-        
-        _document = await context.OpenAsync(address);
     }
 
     private void AppendToTimetableList(List<string> subject, Week dayOfWeek, int lessonNumber, DateTime startAt,
         DateTime endAt, List<Teacher> teachers, List<Classroom> classrooms)
-    {
-        _timetable.TimetableItems.Add(new TimetableItem
+        => _timetable.TimetableItems.Add(new TimetableItem
         {
             Subject = subject,
             DayOfWeek = dayOfWeek,
@@ -46,39 +29,31 @@ internal class TimetableScrapper : IScrapper
             Teacher = teachers,
             Classroom = classrooms
         });
-    }
+
 
     private static List<string> GetSubjects(IElement l)
-    {
-        return l.GetElementsByClassName("p").Select(subject => subject.TextContent).ToList();
-    }
+        => l.GetElementsByClassName("p").Select(subject => subject.TextContent).ToList();
 
     private static List<Classroom> GetClassrooms(IElement l)
-    {
-        return l.GetElementsByClassName("s").Select(classroom => new Classroom
-            {ClassroomNumber = classroom.TextContent, Href = classroom.GetAttribute("href")}).ToList();
-    }
+        => l.GetElementsByClassName("s").Select(classroom => new Classroom
+        { ClassroomNumber = classroom.TextContent, Href = classroom.GetAttribute("href") }).ToList();
 
     private static List<Teacher> GetTeachers(IElement l)
-    {
-        return l.GetElementsByClassName("n").Select(teacher => new Teacher
-            {Initials = teacher.TextContent, Href = teacher.GetAttribute("href")}).ToList();
-    }
+        => l.GetElementsByClassName("n").Select(teacher => new Teacher
+        { Initials = teacher.TextContent, Href = teacher.GetAttribute("href") }).ToList();
 
     private static bool IsLessonEmpty(string content)
-    {
-        return string.IsNullOrWhiteSpace(content);
-    }
+        => string.IsNullOrWhiteSpace(content);
 
     private void ScrapTimetable()
     {
-        if (_document == null) return;
-        var timetable = (IHtmlTableElement) _document.GetElementsByClassName("tabela")[0];
+        if (Document == null) return;
+        var timetable = (IHtmlTableElement)Document.GetElementsByClassName("tabela")[0];
         foreach (var row in timetable.Rows)
         {
             if (row.Index.Equals(0))
                 continue;
-            
+
             var dayOfWeek = Week.Monday;
             var lessonNumber = Convert.ToInt32(row.GetElementsByClassName("nr")[0].TextContent);
             var hours = row.GetElementsByClassName("g")[0].TextContent.Split("-");
@@ -105,7 +80,7 @@ internal class TimetableScrapper : IScrapper
 
     public async Task<Timetable> GetTimetable()
     {
-        await Initialize(_url);
+        await Initialize(Url);
         ScrapTimetable();
 
         return _timetable;

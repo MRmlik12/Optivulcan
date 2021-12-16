@@ -1,61 +1,41 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
-using Optivulcan.Configurations;
 using Optivulcan.Enums;
-using Optivulcan.Interfaces;
 using Optivulcan.Pocos;
 
-namespace Optivulcan;
+namespace Optivulcan.Scrapper;
 
-internal class BranchScrapper : IScrapper
+internal class BranchScrapper : BaseScrapper
 {
-    private readonly List<Branch> _branches;
-    private readonly string _url;
-    private readonly string? _userAgent;
-    private IDocument? _document;
+    private readonly List<Branch> _branches = new();
 
-    public BranchScrapper(string url, string? userAgent)
+    public BranchScrapper(string url, string? userAgent) : base(url, userAgent)
     {
-        _userAgent = userAgent;
-        _branches = new List<Branch>();
-        _url = url;
-    }
-
-    private async Task Initialize(string address)
-    {
-        var context = BrowsingContext.New(AngleSharpConfiguration.GetAngleSharpDefaultConfiguration(_userAgent));
-        
-        _document = await context.OpenAsync(address);
     }
 
     private static BranchType GetBranchType(char branch)
-    {
-        return branch switch
+        => branch switch
         {
             'o' => BranchType.Class,
             'n' => BranchType.Teacher,
             's' => BranchType.ClassRoom,
             _ => BranchType.Other
         };
-    }
 
     private void AppendBranchItem(IHtmlAnchorElement item)
-    {
-        _branches.Add(new Branch
+        => _branches.Add(new Branch
         {
             Name = item.TextContent,
             Url = item.PathName,
             FullUrl = $"{item.Href}/{item.PathName}",
             Type = GetBranchType(item.PathName.Split('/')[2].ToCharArray()[0])
         });
-    }
 
     private void ScrapBranch()
     {
-        var items = _document?.QuerySelectorAll<IHtmlAnchorElement>("ul li a");
+        var items = Document?.QuerySelectorAll<IHtmlAnchorElement>("ul li a");
         if (items == null) return;
 
         foreach (var item in items)
@@ -70,7 +50,7 @@ internal class BranchScrapper : IScrapper
 
     public async Task<List<Branch>> GetBranches()
     {
-        await Initialize($"{_url}/lista.html");
+        await Initialize($"{Url}/lista.html");
         ScrapBranch();
 
         return _branches;
