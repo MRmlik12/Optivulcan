@@ -5,102 +5,109 @@ using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
+using Optivulcan.Configurations;
 using Optivulcan.Enums;
 using Optivulcan.Interfaces;
 using Optivulcan.Pocos;
 
-namespace Optivulcan
+namespace Optivulcan;
+
+internal class TimetableScrapper : IScrapper
 {
-    internal class TimetableScrapper : IScrapper
+    private readonly Timetable _timetable;
+    private readonly string _url;
+    private IDocument? _document;
+    private readonly string? _userAgent;
+
+    public TimetableScrapper(string url, string? userAgent)
     {
-        private IDocument? _document;
-        private readonly string _url;
-        private readonly Timetable _timetable;
-        
-        public TimetableScrapper(string url)
-        {
-            _url = url;
-            _timetable = new Timetable();
-        }
-        
-        private async Task Initialize()
-        {
-            var config = Configuration.Default.WithDefaultLoader();
-            var context = BrowsingContext.New(config);
-            _document = await context.OpenAsync(_url);
-        }
+        _url = url;
+        _userAgent = userAgent;
+        _timetable = new Timetable();
+    }
 
-        private void AppendToTimetableList(List<string> subject, Week dayOfWeek, int lessonNumber, DateTime startAt, DateTime endAt, List<Teacher> teachers, List<Classroom> classrooms)
+    private async Task Initialize(string address)
+    {
+        var context = BrowsingContext.New(AngleSharpConfiguration.GetAngleSharpDefaultConfiguration(_userAgent));
+        
+        _document = await context.OpenAsync(address);
+    }
+
+    private void AppendToTimetableList(List<string> subject, Week dayOfWeek, int lessonNumber, DateTime startAt,
+        DateTime endAt, List<Teacher> teachers, List<Classroom> classrooms)
+    {
+        _timetable.TimetableItems.Add(new TimetableItem
         {
-            _timetable.TimetableItems.Add(new TimetableItem
+            Subject = subject,
+            DayOfWeek = dayOfWeek,
+            LessonNumber = lessonNumber,
+            StartAt = startAt,
+            EndAt = endAt,
+            Teacher = teachers,
+            Classroom = classrooms
+        });
+    }
+
+    private static List<string> GetSubjects(IElement l)
+    {
+        return l.GetElementsByClassName("p").Select(subject => subject.TextContent).ToList();
+    }
+
+    private static List<Classroom> GetClassrooms(IElement l)
+    {
+        return l.GetElementsByClassName("s").Select(classroom => new Classroom
+            {ClassroomNumber = classroom.TextContent, Href = classroom.GetAttribute("href")}).ToList();
+    }
+
+    private static List<Teacher> GetTeachers(IElement l)
+    {
+        return l.GetElementsByClassName("n").Select(teacher => new Teacher
+            {Initials = teacher.TextContent, Href = teacher.GetAttribute("href")}).ToList();
+    }
+
+    private static bool IsLessonEmpty(string content)
+    {
+        return string.IsNullOrWhiteSpace(content);
+    }
+
+    private void ScrapTimetable()
+    {
+        if (_document == null) return;
+        var timetable = (IHtmlTableElement) _document.GetElementsByClassName("tabela")[0];
+        foreach (var row in timetable.Rows)
+        {
+            if (row.Index.Equals(0))
+                continue;
+            
+            var dayOfWeek = Week.Monday;
+            var lessonNumber = Convert.ToInt32(row.GetElementsByClassName("nr")[0].TextContent);
+            var hours = row.GetElementsByClassName("g")[0].TextContent.Split("-");
+
+            foreach (var l in row.GetElementsByClassName("l"))
             {
-                Subject = subject,
-                DayOfWeek = dayOfWeek,
-                LessonNumber = lessonNumber,
-                StartAt = startAt,
-                EndAt = endAt,
-                Teacher = teachers,
-                Classroom = classrooms
-            });
-        }
-        
-        private static List<string> GetSubjects(IElement l)
-        {
-            return l.GetElementsByClassName("p").Select(subject => subject.TextContent).ToList();
-        }
-
-        private static List<Classroom> GetClassrooms(IElement l)
-        {
-            return l.GetElementsByClassName("s").Select(classroom => new Classroom {ClassroomNumber = classroom.TextContent, Href = classroom.GetAttribute("href")}).ToList();
-        }
-
-        private static List<Teacher> GetTeachers(IElement l)
-        {
-            return l.GetElementsByClassName("n").Select(teacher => new Teacher {Initials = teacher.TextContent, Href = teacher.GetAttribute("href")}).ToList();
-        }
-
-        private static bool IsLessonEmpty(string content)
-        {
-            return string.IsNullOrWhiteSpace(content);
-        }
-
-        private void ScrapTimetable()
-        {
-            if (_document == null) return;
-            var timetable = (IHtmlTableElement)_document.GetElementsByClassName("tabela")[0];
-            foreach (var row in timetable.Rows)
-            {
-                if (row.Index.Equals(0))
-                    continue;
-                var dayOfWeek = Week.Monday;
-                var lessonNumber = Convert.ToInt32(row.GetElementsByClassName("nr")[0].TextContent);
-                var hours = row.GetElementsByClassName("g")[0].TextContent.Split("-");
-
-                foreach (var l in row.GetElementsByClassName("l"))
+                if (IsLessonEmpty(l.TextContent))
                 {
-                    if (IsLessonEmpty(l.TextContent))
-                    {
-                        dayOfWeek++;
-                        continue;
-                    }
-                    
-                    var teachers = GetTeachers(l);
-                    var lessons = GetSubjects(l);
-                    var classrooms = GetClassrooms(l);
-
-                    AppendToTimetableList(lessons, dayOfWeek, lessonNumber, DateTime.Parse(hours[0]), DateTime.Parse(hours[1]),
-                        teachers, classrooms);
                     dayOfWeek++;
+                    continue;
                 }
+
+                var teachers = GetTeachers(l);
+                var lessons = GetSubjects(l);
+                var classrooms = GetClassrooms(l);
+
+                AppendToTimetableList(lessons, dayOfWeek, lessonNumber, DateTime.Parse(hours[0]),
+                    DateTime.Parse(hours[1]),
+                    teachers, classrooms);
+                dayOfWeek++;
             }
         }
+    }
 
-        public async Task<Timetable> GetTimetable()
-        {
-            await Initialize();
-            ScrapTimetable();
-            
-            return _timetable;
-        }
+    public async Task<Timetable> GetTimetable()
+    {
+        await Initialize(_url);
+        ScrapTimetable();
+
+        return _timetable;
     }
 }

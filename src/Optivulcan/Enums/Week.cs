@@ -1,12 +1,11 @@
-namespace Optivulcan.Enums
+namespace Optivulcan.Enums;
+
+public enum Week
 {
-    public enum Week
-    {
-        Monday,
-        Tuesday,
-        Wednesday,
-        Thursday,
-        Friday,
-        Saturday
-    }
+    Monday,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday
 }
