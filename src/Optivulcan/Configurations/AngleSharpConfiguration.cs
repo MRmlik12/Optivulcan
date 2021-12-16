@@ -16,7 +16,7 @@ internal static class AngleSharpConfiguration
             }
         );
         httpClient.DefaultRequestHeaders.Add("User-Agent",
-            userAgent ?? $"Optivulcan {typeof(Api).Assembly.GetName().Version}");
+            userAgent ?? $"Optivulcan {typeof(OptivulcanApi).Assembly.GetName().Version}");
 
         var config = Configuration.Default
             .With(new HttpClientRequester(httpClient)).WithDefaultLoader();
