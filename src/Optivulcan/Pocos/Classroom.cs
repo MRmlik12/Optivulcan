@@ -1,10 +1,12 @@
-namespace Optivulcan.Pocos
-{
-    public class Classroom
-    {
-        public string? ClassroomNumber { get; set; }
-        public string? Href { get; set; }
+namespace Optivulcan.Pocos;
 
-        public override string ToString() => ClassroomNumber!;
+public class Classroom
+{
+    public string? ClassroomNumber { get; set; }
+    public string? Href { get; set; }
+
+    public override string ToString()
+    {
+        return ClassroomNumber!;
     }
 }

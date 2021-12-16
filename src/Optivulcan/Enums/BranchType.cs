@@ -1,10 +1,9 @@
-namespace Optivulcan.Enums
+namespace Optivulcan.Enums;
+
+public enum BranchType
 {
-    public enum BranchType
-    {
-        Class,
-        Teacher,
-        ClassRoom,
-        Other
-    }
+    Class,
+    Teacher,
+    ClassRoom,
+    Other
 }

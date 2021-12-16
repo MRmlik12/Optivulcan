@@ -3,74 +3,76 @@ using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
+using Optivulcan.Configurations;
 using Optivulcan.Enums;
 using Optivulcan.Interfaces;
 using Optivulcan.Pocos;
 
-namespace Optivulcan
+namespace Optivulcan;
+
+internal class BranchScrapper : IScrapper
 {
-    internal class BranchScrapper : IScrapper
+    private readonly List<Branch> _branches;
+    private readonly string _url;
+    private readonly string? _userAgent;
+    private IDocument? _document;
+
+    public BranchScrapper(string url, string? userAgent)
     {
-        private IDocument? _document;
-        private readonly string _url;
-        private readonly List<Branch> _branches;
+        _userAgent = userAgent;
+        _branches = new List<Branch>();
+        _url = url;
+    }
 
-        public BranchScrapper(string url)
-        {
-            _branches = new List<Branch>();
-            _url = url;
-        }
+    private async Task Initialize(string address)
+    {
+        var context = BrowsingContext.New(AngleSharpConfiguration.GetAngleSharpDefaultConfiguration(_userAgent));
         
-        private async Task Initialize()
-        {
-            var config = Configuration.Default.WithDefaultLoader();
-            var context = BrowsingContext.New(config);
-            _document = await context.OpenAsync($"{_url}/lista.html");
-        }
+        _document = await context.OpenAsync(address);
+    }
 
-        private static BranchType GetBranchType(char branch)
+    private static BranchType GetBranchType(char branch)
+    {
+        return branch switch
         {
-            return branch switch
-            {
-                'o' => BranchType.Class,
-                'n' => BranchType.Teacher,
-                's' => BranchType.ClassRoom,
-                _ => BranchType.Other
-            };
-        }
+            'o' => BranchType.Class,
+            'n' => BranchType.Teacher,
+            's' => BranchType.ClassRoom,
+            _ => BranchType.Other
+        };
+    }
 
-        private void AppendBranchItem(IHtmlAnchorElement item)
+    private void AppendBranchItem(IHtmlAnchorElement item)
+    {
+        _branches.Add(new Branch
         {
-            _branches.Add(new Branch
-            {
-                Name = item.TextContent,
-                Url = item.PathName,
-                FullUrl = $"{item.Href}/{item.PathName}",
-                Type = GetBranchType(item.PathName.Split('/')[2].ToCharArray()[0])
-            });
-        }
+            Name = item.TextContent,
+            Url = item.PathName,
+            FullUrl = $"{item.Href}/{item.PathName}",
+            Type = GetBranchType(item.PathName.Split('/')[2].ToCharArray()[0])
+        });
+    }
 
-        private void ScrapBranch()
+    private void ScrapBranch()
+    {
+        var items = _document?.QuerySelectorAll<IHtmlAnchorElement>("ul li a");
+        if (items == null) return;
+
+        foreach (var item in items)
         {
-            var items = _document?.QuerySelectorAll<IHtmlAnchorElement>("ul li a");
-            if (items == null) return;
-            
-            foreach (var item in items)
-            {
-                var target = item.Target;
-                
-                if (target!.Equals("_blank")) continue;
-                
-                AppendBranchItem(item);
-            }
-        }
+            var target = item.Target;
 
-        public async Task<List<Branch>> GetBranches()
-        {
-            await Initialize();
-            ScrapBranch();
+            if (target!.Equals("_blank")) continue;
 
-            return _branches;
+            AppendBranchItem(item);
         }
+    }
+
+    public async Task<List<Branch>> GetBranches()
+    {
+        await Initialize($"{_url}/lista.html");
+        ScrapBranch();
+
+        return _branches;
     }
 }

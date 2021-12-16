@@ -1,15 +1,13 @@
-using System;
 using System.Collections.Generic;
 
-namespace Optivulcan.Pocos
-{
-    public class Timetable
-    {
-        public List<TimetableItem> TimetableItems { get; set; }
+namespace Optivulcan.Pocos;
 
-        public Timetable()
-        {
-            TimetableItems = new List<TimetableItem>();
-        }
+public class Timetable
+{
+    public Timetable()
+    {
+        TimetableItems = new List<TimetableItem>();
     }
+
+    public List<TimetableItem> TimetableItems { get; set; }
 }
