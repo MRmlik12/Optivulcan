@@ -39,10 +39,10 @@ internal class TimetableScrapper : BaseScrapper
         => l.GetElementsByClassName("s").Select(classroom => new Classroom
         { ClassroomNumber = classroom.TextContent, Href = classroom.GetAttribute("href") }).ToList();
 
-    private DateOnly GetTimetableGeneratedDate(IElement l)
+    private DateOnly GetTimetableGeneratedDate()
     {
         var rawDate = Document?.Body.SelectSingleNode("/html/body/div/table/tbody/tr[3]/td[2]/table/tbody/tr/td[1]").TextContent.Trim().Split(" ")[1];
-        var matchedDate = Regex.Match(rawDate, "^([0-2][0-9]|(3)[0-1])(\\.)(((0)[0-9])|((1)[0-2]))(\\.)\\d{4}$");
+        var matchedDate = Regex.Match(rawDate?.Replace("za", "")!, "^([0-2][0-9]|(3)[0-1])(\\.)(((0)[0-9])|((1)[0-2]))(\\.)\\d{4}$");
 
         return DateOnly.Parse(matchedDate.Value);
     }
@@ -64,7 +64,7 @@ internal class TimetableScrapper : BaseScrapper
             if (row.Index.Equals(0))
                 continue;
 
-            _timetable.GeneratedAt = GetTimetableGeneratedDate(timetable);
+            _timetable.GeneratedAt = GetTimetableGeneratedDate();
             var dayOfWeek = Week.Monday;
             var lessonNumber = Convert.ToInt32(row.GetElementsByClassName("nr")[0].TextContent);
             var hours = row.GetElementsByClassName("g")[0].TextContent.Split("-");
