@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using Optivulcan.Enums;
 using Optivulcan.Pocos;
 using WireMock.RequestBuilders;
@@ -21,6 +20,11 @@ public class TimetableTest : IDisposable
     public TimetableTest()
     {
         _server = WireMockServer.Start();
+    }
+
+    public void Dispose()
+    {
+        _server?.Dispose();
     }
 
     [Fact]
@@ -48,8 +52,8 @@ public class TimetableTest : IDisposable
             },
             DayOfWeek = Week.Tuesday,
             LessonNumber = 1,
-            StartAt = DateTime.Parse("8:00"),
-            EndAt = DateTime.Parse("8:45"),
+            StartAt = TimeOnly.Parse("8:00"),
+            EndAt = TimeOnly.Parse("8:45"),
             Teacher = new List<Teacher>
             {
                 new()
@@ -78,7 +82,4 @@ public class TimetableTest : IDisposable
         Assert.Equal(expectedItem.Classroom[0].ToString(), result.TimetableItems?[1].Classroom?[0].ToString());
         Assert.Equal(expectedItem.Classroom[0].Href, result.TimetableItems?[1].Classroom?[0].Href);
     }
-
-    public void Dispose()
-        => _server?.Dispose();
 }

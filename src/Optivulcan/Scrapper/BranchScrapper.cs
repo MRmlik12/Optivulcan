@@ -16,22 +16,26 @@ internal class BranchScrapper : BaseScrapper
     }
 
     private static BranchType GetBranchType(char branch)
-        => branch switch
+    {
+        return branch switch
         {
             'o' => BranchType.Class,
             'n' => BranchType.Teacher,
             's' => BranchType.ClassRoom,
             _ => BranchType.Other
         };
+    }
 
     private void AppendBranchItem(IHtmlAnchorElement item)
-        => _branches.Add(new Branch
+    {
+        _branches.Add(new Branch
         {
             Name = item.TextContent,
             Url = item.PathName,
             FullUrl = $"{item.Href}/{item.PathName}",
             Type = GetBranchType(item.PathName.Split('/')[2].ToCharArray()[0])
         });
+    }
 
     private void ScrapBranch()
     {

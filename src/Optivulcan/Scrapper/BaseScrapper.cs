@@ -8,9 +8,9 @@ namespace Optivulcan.Scrapper;
 
 internal abstract class BaseScrapper : IScrapper
 {
+    private readonly string? _userAgent;
     protected readonly string Url;
     protected IDocument? Document;
-    private readonly string? _userAgent;
 
     protected BaseScrapper(string url, string? userAgent)
     {

@@ -8,8 +8,12 @@ namespace Optivulcan;
 public static class OptivulcanApi
 {
     public static async Task<List<Branch>> GetBranchListAsync(string url, string? userAgent = null)
-        => await new BranchScrapper(url, userAgent).GetBranches();
+    {
+        return await new BranchScrapper(url, userAgent).GetBranches();
+    }
 
     public static async Task<Timetable> GetTimetableAsync(string fullUrl, string? userAgent = null)
-        => await new TimetableScrapper(fullUrl, userAgent).GetTimetable();
+    {
+        return await new TimetableScrapper(fullUrl, userAgent).GetTimetable();
+    }
 }

@@ -1,13 +1,12 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Optivulcan.Interfaces
+namespace Optivulcan.Interfaces;
+
+public interface IScrapper
 {
-    public interface IScrapper
+    private Task Initialize(string url)
     {
-        private Task Initialize(string url)
-        {
-            throw new NotImplementedException();
-        }
+        throw new NotImplementedException();
     }
 }
