@@ -19,6 +19,11 @@ public class BranchTest : IDisposable
         _server = WireMockServer.Start();
     }
 
+    public void Dispose()
+    {
+        _server?.Dispose();
+    }
+
     [Fact]
     public async void TestBranchListReturnsCountOfReturnedValue()
     {
@@ -49,8 +54,4 @@ public class BranchTest : IDisposable
         Assert.Equal(expectedItem.FullUrl, expectedItem.FullUrl);
         Assert.Equal(expectedItem.Type, result[0].Type);
     }
-
-    public void Dispose()
-        => _server?.Dispose();
-
 }

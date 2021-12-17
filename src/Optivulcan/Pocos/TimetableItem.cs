@@ -9,8 +9,8 @@ public class TimetableItem
     public List<string>? Subject { get; init; }
     public Week DayOfWeek { get; init; }
     public int LessonNumber { get; init; }
-    public DateTime StartAt { get; init; }
-    public DateTime EndAt { get; init; }
+    public TimeOnly StartAt { get; init; }
+    public TimeOnly EndAt { get; init; }
     public List<Teacher>? Teacher { get; init; }
     public List<Classroom>? Classroom { get; init; }
 }
