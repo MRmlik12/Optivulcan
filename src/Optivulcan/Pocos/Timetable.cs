@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Optivulcan.Pocos;
@@ -9,5 +10,6 @@ public class Timetable
         TimetableItems = new List<TimetableItem>();
     }
 
-    public List<TimetableItem> TimetableItems { get; set; }
+    public List<TimetableItem>? TimetableItems { get; set; }
+    public DateOnly GeneratedAt { get; set; }
 }
