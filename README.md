@@ -1,14 +1,14 @@
 # Optivulcan
-![example workflow](https://github.com/MRmlik12/Optivulcan/actions/workflows/build-deploy.yml/badge.svg)
-[![NuGet version (SoftCircuits.Silk)](https://img.shields.io/nuget/v/Optivulcan.svg?style=flat)](https://www.nuget.org/packages/Optivulcan/)
+![Build and deploy](https://github.com/MRmlik12/Optivulcan/actions/workflows/build-deploy.yml/badge.svg)
+[![NuGet version (Optivulcan)](https://img.shields.io/nuget/v/Optivulcan.svg?style=flat)](https://www.nuget.org/packages/Optivulcan/)
 
 A simple timetable parser for Optivum UONET+ written in C# 
 
 # Example usage
 
 ```csharp
-var branches = await Api.GetBranchListAsync("URL_OF_YOUR_SCHOOL_TIMETABLE"); // Get branches
-var timetable = await .GetTimetableAsync(branches[index].FullUrl) // Get timetable
+var branches = await OptivulcanApi.GetBranches("URL_OF_YOUR_SCHOOL_TIMETABLE"); // Get branches
+var timetable = await OptivulcanApi.GetTimetable(branches[index].FullUrl) // Get timetable
 ```
 
 # Build from source
