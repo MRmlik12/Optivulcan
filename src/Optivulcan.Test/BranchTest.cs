@@ -30,7 +30,7 @@ public class BranchTest : IDisposable
         _server.Given(Request.Create().WithPath("/lista.html"))
             .RespondWith(Response.Create().WithBody(File.ReadAllText("./html/lista.html")));
 
-        var result = await OptivulcanApi.GetBranchListAsync(_server.Urls[0]);
+        var result = await OptivulcanApi.GetBranches(_server.Urls[0]);
         Assert.Equal(Size, result.Count);
     }
 
@@ -40,7 +40,7 @@ public class BranchTest : IDisposable
         _server.Given(Request.Create().WithPath("/lista.html"))
             .RespondWith(Response.Create().WithBody(await File.ReadAllTextAsync("./html/lista.html")));
 
-        var result = await OptivulcanApi.GetBranchListAsync(_server.Urls[0]);
+        var result = await OptivulcanApi.GetBranches(_server.Urls[0]);
         var expectedItem = new Branch
         {
             Name = "6A",

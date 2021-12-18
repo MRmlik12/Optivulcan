@@ -42,7 +42,7 @@ internal class TimetableScrapper : BaseScrapper
     private static List<Classroom> GetClassrooms(IElement l)
     {
         return l.GetElementsByClassName("s").Select(classroom => new Classroom
-            {ClassroomNumber = classroom.TextContent, Href = classroom.GetAttribute("href")}).ToList();
+            { ClassroomNumber = classroom.TextContent, Href = classroom.GetAttribute("href") }).ToList();
     }
 
     private DateOnly GetTimetableGeneratedDate()
@@ -55,10 +55,18 @@ internal class TimetableScrapper : BaseScrapper
         return DateOnly.Parse(matchedDate.Value);
     }
 
+    private string? GetTimetableValidFrom()
+    {
+        var rawDate = Document?.Body.SelectSingleNode("/html/body/div/table/tbody/tr[2]/td").TextContent.Split(":")[1]
+            .Replace("r.", "").Replace("roku", "").Trim();
+
+        return rawDate;
+    }
+
     private static List<Teacher> GetTeachers(IElement l)
     {
         return l.GetElementsByClassName("n").Select(teacher => new Teacher
-            {Initials = teacher.TextContent, Href = teacher.GetAttribute("href")}).ToList();
+            { Initials = teacher.TextContent, Href = teacher.GetAttribute("href") }).ToList();
     }
 
     private static bool IsLessonEmpty(string content)
@@ -69,14 +77,16 @@ internal class TimetableScrapper : BaseScrapper
     private void ScrapTimetable()
     {
         if (Document == null) return;
-        var timetable = (IHtmlTableElement) Document.GetElementsByClassName("tabela")[0];
+        var timetable = (IHtmlTableElement)Document.GetElementsByClassName("tabela")[0];
+
+        _timetable.GeneratedAt = GetTimetableGeneratedDate();
+        _timetable.ValidFrom = GetTimetableValidFrom();
 
         foreach (var row in timetable.Rows)
         {
             if (row.Index.Equals(0))
                 continue;
 
-            _timetable.GeneratedAt = GetTimetableGeneratedDate();
             var dayOfWeek = Week.Monday;
             var lessonNumber = Convert.ToInt32(row.GetElementsByClassName("nr")[0].TextContent);
             var hours = row.GetElementsByClassName("g")[0].TextContent.Split("-");
