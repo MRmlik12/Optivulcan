@@ -13,6 +13,7 @@ namespace Optivulcan.Test;
 public class TimetableTest : IDisposable
 {
     private const int ExpectedListSize = 13;
+    private const string ExpectedValidFrom = "10 maja 2021";
     private readonly DateOnly _expectedGeneratedDate = DateOnly.Parse("05.07.2020");
 
     private readonly WireMockServer _server;
@@ -33,7 +34,7 @@ public class TimetableTest : IDisposable
         _server.Given(Request.Create().WithPath("/plany/o1.html"))
             .RespondWith(Response.Create().WithBody(await File.ReadAllTextAsync("./html/plany/o1.html")));
 
-        var result = await OptivulcanApi.GetTimetableAsync(_server.Urls[0] + "/plany/o1.html");
+        var result = await OptivulcanApi.GetTimetable(_server.Urls[0] + "/plany/o1.html");
         Assert.Equal(ExpectedListSize, result.TimetableItems?.Count);
     }
 
@@ -43,7 +44,7 @@ public class TimetableTest : IDisposable
         _server.Given(Request.Create().WithPath("/plany/o1.html"))
             .RespondWith(Response.Create().WithBody(await File.ReadAllTextAsync("./html/plany/o1.html")));
 
-        var result = await OptivulcanApi.GetTimetableAsync(_server.Urls[0] + "/plany/o1.html");
+        var result = await OptivulcanApi.GetTimetable(_server.Urls[0] + "/plany/o1.html");
         var expectedItem = new TimetableItem
         {
             Subject = new List<string>
@@ -72,6 +73,7 @@ public class TimetableTest : IDisposable
             }
         };
 
+        Assert.Equal(ExpectedValidFrom, result.ValidFrom);
         Assert.Equal(_expectedGeneratedDate, result.GeneratedAt);
         Assert.Equal(expectedItem.Subject, result.TimetableItems?[1].Subject);
         Assert.Equal(expectedItem.DayOfWeek, result.TimetableItems?[1].DayOfWeek);

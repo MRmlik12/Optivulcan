@@ -12,4 +12,5 @@ public class Timetable
 
     public List<TimetableItem>? TimetableItems { get; set; }
     public DateOnly GeneratedAt { get; set; }
+    public string? ValidFrom { get; set; }
 }
