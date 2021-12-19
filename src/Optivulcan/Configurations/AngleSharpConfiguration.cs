@@ -12,7 +12,7 @@ internal static class AngleSharpConfiguration
             new HttpClientHandler
             {
                 UseCookies = false,
-                AllowAutoRedirect = false
+                AllowAutoRedirect = true
             }
         );
         httpClient.DefaultRequestHeaders.Add("User-Agent",

@@ -15,7 +15,7 @@ internal abstract class BaseScrapper : IScrapper
     protected BaseScrapper(string url, string? userAgent)
     {
         _userAgent = userAgent;
-        Url = url;
+        Url = url.EndsWith("/") ? url.TrimEnd('/') : url;
     }
 
     protected async Task Initialize(string address)

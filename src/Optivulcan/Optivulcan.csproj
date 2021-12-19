@@ -19,9 +19,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AngleSharp" Version="0.16.1" />
-        <PackageReference Include="AngleSharp.Io" Version="0.16.0" />
-        <PackageReference Include="AngleSharp.XPath" Version="1.1.7" />
+        <PackageReference Include="AngleSharp" Version="0.16.1"/>
+        <PackageReference Include="AngleSharp.Io" Version="0.16.0"/>
+        <PackageReference Include="AngleSharp.XPath" Version="1.1.7"/>
     </ItemGroup>
 
 </Project>
