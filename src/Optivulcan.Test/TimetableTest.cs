@@ -14,7 +14,7 @@ public class TimetableTest : IDisposable
 {
     private const int ExpectedListSize = 13;
     private const string ExpectedValidFrom = "10 maja 2021";
-    private readonly DateOnly _expectedGeneratedDate = DateOnly.Parse("05.07.2020");
+    private readonly DateTime _expectedGeneratedDate = DateTime.Parse("05.07.2020");
 
     private readonly WireMockServer _server;
 
@@ -53,8 +53,8 @@ public class TimetableTest : IDisposable
             },
             DayOfWeek = Week.Tuesday,
             LessonNumber = 1,
-            StartAt = TimeOnly.Parse("8:00"),
-            EndAt = TimeOnly.Parse("8:45"),
+            StartAt = DateTime.Parse("8:00"),
+            EndAt = DateTime.Parse("8:45"),
             Teacher = new List<Teacher>
             {
                 new()

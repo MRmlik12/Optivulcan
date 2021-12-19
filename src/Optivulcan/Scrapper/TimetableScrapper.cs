@@ -19,8 +19,8 @@ internal class TimetableScrapper : BaseScrapper
     {
     }
 
-    private void AppendToTimetableList(List<string> subject, Week dayOfWeek, int lessonNumber, TimeOnly startAt,
-        TimeOnly endAt, List<Teacher> teachers, List<Classroom> classrooms)
+    private void AppendToTimetableList(List<string> subject, Week dayOfWeek, int lessonNumber, DateTime startAt,
+        DateTime endAt, List<Teacher> teachers, List<Classroom> classrooms)
     {
         _timetable.TimetableItems?.Add(new TimetableItem
         {
@@ -45,14 +45,14 @@ internal class TimetableScrapper : BaseScrapper
             { ClassroomNumber = classroom.TextContent, Href = classroom.GetAttribute("href") }).ToList();
     }
 
-    private DateOnly GetTimetableGeneratedDate()
+    private DateTime GetTimetableGeneratedDate()
     {
         var rawDate = Document?.Body.SelectSingleNode("/html/body/div/table/tbody/tr[3]/td[2]/table/tbody/tr/td[1]")
             .TextContent.Trim().Split(" ")[1];
         var matchedDate = Regex.Match(rawDate?.Replace("za", "")!,
             "^([0-2][0-9]|(3)[0-1])(\\.)(((0)[0-9])|((1)[0-2]))(\\.)\\d{4}$");
 
-        return DateOnly.Parse(matchedDate.Value);
+        return DateTime.Parse(matchedDate.Value);
     }
 
     private string? GetTimetableValidFrom()
@@ -103,8 +103,8 @@ internal class TimetableScrapper : BaseScrapper
                 var lessons = GetSubjects(l);
                 var classrooms = GetClassrooms(l);
 
-                AppendToTimetableList(lessons, dayOfWeek, lessonNumber, TimeOnly.Parse(hours[0]),
-                    TimeOnly.Parse(hours[1]),
+                AppendToTimetableList(lessons, dayOfWeek, lessonNumber, DateTime.Parse(hours[0]),
+                    DateTime.Parse(hours[1]),
                     teachers, classrooms);
                 dayOfWeek++;
             }
