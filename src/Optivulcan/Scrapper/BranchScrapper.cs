@@ -31,8 +31,8 @@ internal class BranchScrapper : BaseScrapper
         _branches.Add(new Branch
         {
             Name = item.TextContent,
-            Url = item.PathName,
-            FullUrl = $"{item.Href}/{item.PathName}",
+            Url = $"/{item.GetAttribute("href")}",
+            FullUrl = $"{item.Href}",
             Type = GetBranchType(item.PathName.Split('/')[2].ToCharArray()[0])
         });
     }
