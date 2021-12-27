@@ -4,6 +4,6 @@ public enum BranchType
 {
     Class,
     Teacher,
-    ClassRoom,
+    Classroom,
     Other
 }
