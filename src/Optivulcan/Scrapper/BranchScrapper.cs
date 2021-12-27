@@ -21,7 +21,7 @@ internal class BranchScrapper : BaseScrapper
         {
             'o' => BranchType.Class,
             'n' => BranchType.Teacher,
-            's' => BranchType.ClassRoom,
+            's' => BranchType.Classroom,
             _ => BranchType.Other
         };
     }
@@ -33,7 +33,7 @@ internal class BranchScrapper : BaseScrapper
             Name = item.TextContent,
             Url = $"/{item.GetAttribute("href")}",
             FullUrl = $"{item.Href}",
-            Type = GetBranchType(item.PathName.Split('/')[2].ToCharArray()[0])
+            Type = GetBranchType(item.GetAttribute("href")!.Split('/')[1].ToCharArray()[0])
         });
     }
 
