@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -42,7 +43,7 @@ internal class TimetableScrapper : BaseScrapper
     private static List<Classroom> GetClassrooms(IElement l)
     {
         return l.GetElementsByClassName("s").Select(classroom => new Classroom
-        { ClassroomNumber = classroom.TextContent, Href = classroom.GetAttribute("href") }).ToList();
+            { ClassroomNumber = classroom.TextContent, Href = classroom.GetAttribute("href") }).ToList();
     }
 
     private DateTime? GetTimetableGeneratedDate()
@@ -52,7 +53,13 @@ internal class TimetableScrapper : BaseScrapper
         var matchedDate = Regex.Match(rawDate?.Replace("za", "")!,
             "^([0-2][0-9]|(3)[0-1])(\\.)(((0)[0-9])|((1)[0-2]))(\\.)\\d{4}$");
 
-        if (DateTime.TryParse(matchedDate.Value, out var parsedDate))
+        if (DateTime.TryParseExact(
+                matchedDate.Value,
+                "dd.mm.yyyy",
+                new CultureInfo("pl-PL"),
+                DateTimeStyles.None,
+                out var parsedDate)
+           )
             return parsedDate;
 
         return null;
@@ -69,7 +76,7 @@ internal class TimetableScrapper : BaseScrapper
     private static List<Teacher> GetTeachers(IElement l)
     {
         return l.GetElementsByClassName("n").Select(teacher => new Teacher
-        { Initials = teacher.TextContent, Href = teacher.GetAttribute("href") }).ToList();
+            { Initials = teacher.TextContent, Href = teacher.GetAttribute("href") }).ToList();
     }
 
     private static bool IsLessonEmpty(string content)
