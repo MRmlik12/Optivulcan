@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using Optivulcan.Enums;
 using Optivulcan.Pocos;
@@ -14,7 +15,7 @@ public class TimetableTest : IDisposable
 {
     private const int ExpectedListSize = 13;
     private const string ExpectedValidFrom = "10 maja 2021";
-    private readonly DateTime _expectedGeneratedDate = DateTime.Parse("05.07.2020");
+    private readonly DateTime _expectedGeneratedDate = DateTime.ParseExact("14.01.2022", "dd.mm.yyyy", CultureInfo.InvariantCulture);
 
     private readonly WireMockServer _server;
 
