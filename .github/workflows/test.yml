@@ -10,6 +10,6 @@ jobs:
         with:
           dotnet-version: 6.0.x
       - name: Install dependencies
-        run: dotnet restore src
+        run: dotnet restore
       - name: Test project
-        run: dotnet test src/Optivulcan.Test
+        run: dotnet test
