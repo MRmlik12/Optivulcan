@@ -49,9 +49,9 @@ internal class TimetableScrapper : BaseScrapper
     private DateTime? GetTimetableGeneratedDate()
     {
         var rawDate = Document?.Body.SelectSingleNode("/html/body/div/table/tbody/tr[3]/td[2]/table/tbody/tr/td[1]")
-            .TextContent.Trim().Split(" ")[1];
-        var matchedDate = Regex.Match(rawDate?.Replace("za\n", "").Replace("\nza", "")!,
-            "^([0-3][0-9]|(3)[0-1])(\\.)(((0)[0-9])|((1)[0-2]))(\\.)\\d{4}$");
+            .TextContent;
+        var matchedDate = Regex.Match(rawDate!,
+            @"([0-3][0-9]|(3)[0-1])(\.)(((0)[0-9])|((1)[0-2]))(\.)\d{4}");
 
         if (DateTime.TryParseExact(matchedDate.Value, "dd.mm.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             return parsedDate;
